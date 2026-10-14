@@ -1,0 +1,44 @@
+name: Novo cliente (Claude)
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  criar-site:
+    if: contains(github.event.issue.labels.*.name, 'novo-cliente')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Leia a issue com `gh issue view ${{ github.event.issue.number }} --json title,body`.
+            Ela traz os dados de um novo restaurante. Siga a skill em .claude/skills/novo-cliente/SKILL.md e as regras do CLAUDE.md.
+            Imagens anexadas na issue: baixe com curl para imagens/<slug>/.
+            Não pergunte nada: o que faltar fica vazio e vai listado no PR.
+            Ao terminar e com `node build.js` sem erros:
+            1. git checkout -b cliente/<slug>
+            2. git add clientes imagens && git commit -m "cliente: adiciona <nome>"
+            3. git push -u origin cliente/<slug>
+            4. gh pr create com título "Novo cliente: <nome>", corpo com "Closes #${{ github.event.issue.number }}", paleta/fontes escolhidas e a lista do que ficou faltando.
+            5. Comente na issue o link do PR.
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(node build.js),Bash(mkdir *),Bash(cp *),Bash(ls *),Bash(curl *),Bash(git checkout *),Bash(git add *),Bash(git commit *),Bash(git push *),Bash(gh issue view *),Bash(gh issue comment *),Bash(gh pr create *)"

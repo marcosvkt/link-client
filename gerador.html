@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gerador de Sites</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f2ef;--panel:#fff;--ink:#1f1b16;--muted:#776d63;--line:#e6e0d8;--acc:#e8711c;--acc-ink:#fff;--warn:#b54708;--warnbg:#fff4e5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;height:100vh;display:flex;flex-direction:column}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top h1{font-size:15px;font-weight:700;margin-right:auto}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap}
+.btn:hover{border-color:#cbbfb2}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.btn.sm{padding:5px 9px;font-size:12px}
+.main{flex:1;display:grid;grid-template-columns:420px 1fr;min-height:0}
+.form{overflow:auto;padding:14px;border-right:1px solid var(--line)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+summary{padding:12px 14px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--muted)}details[open] summary::after{content:"–"}
+.sec{padding:0 14px 14px;display:grid;gap:10px}
+.f{display:grid;gap:4px}
+.f>span{font-size:12px;font-weight:600;color:var(--muted)}
+.f input,.f select,.f textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;min-width:0}
+.f input:focus,.f select:focus,.f textarea:focus{outline:2px solid color-mix(in srgb,var(--acc) 40%,transparent);border-color:var(--acc)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.color{display:flex;gap:4px}.color input:not([type=color]){font-size:12px;padding:8px 6px}.color input[type=color]{width:40px;padding:2px;height:36px;flex:none}
+.img{display:flex;gap:6px;align-items:center}
+.img img{width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex:none;background:#eee}
+.up{flex:none;padding:7px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;background:#faf8f5}
+.item{border:1px dashed var(--line);border-radius:10px;padding:10px;display:grid;gap:8px;position:relative}
+.item .rm{position:absolute;top:6px;right:6px}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.preset{display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:#fff;font-size:12px;font-weight:600}
+.preset i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.sw{width:28px;height:28px;border-radius:6px;border:1px solid rgba(0,0,0,.15);cursor:pointer}
+.warn{background:var(--warnbg);color:var(--warn);padding:8px 10px;border-radius:8px;font-size:12px}
+.hint{font-size:12px;color:var(--muted)}
+.hours{display:grid;gap:4px}
+.hours .h{display:grid;grid-template-columns:78px 22px 1fr 1fr;gap:6px;align-items:center;font-size:12px}
+.hours input[type=time]{padding:4px 6px;border:1px solid var(--line);border-radius:6px;width:100%}
+.hours input:disabled{opacity:.35}
+.toggle{display:flex;align-items:center;gap:8px;font-weight:600}
+.pv{display:flex;flex-direction:column;min-height:0;padding:12px;gap:8px}
+.pvbar{display:flex;gap:6px;align-items:center}
+.pvbar .hint{margin-left:auto}
+.frame{flex:1;display:flex;justify-content:center;min-height:0}
+iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:12px;background:#fff;transition:width .3s}
+.frame.mob iframe{width:390px}
+.seg .btn[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}
+@media (max-width:900px){.main{grid-template-columns:1fr;grid-template-rows:auto 70vh}.form{border-right:0}}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Gerador de Sites · Restaurantes</h1>
+  <button class="btn" id="bNovo">Novo</button>
+  <label class="btn">Importar JSON<input type="file" accept=".json" id="fImport" hidden></label>
+  <button class="btn" id="bCopy">Copiar JSON</button>
+  <button class="btn" id="bHtml">Baixar site (.html)</button>
+  <button class="btn pri" id="bZip">Baixar pacote para o GitHub</button>
+</div>
+<div class="main">
+  <div class="form" id="form"></div>
+  <div class="pv">
+    <div class="pvbar">
+      <div class="seg"><button class="btn sm" data-v="desk" aria-pressed="true">Computador</button> <button class="btn sm" data-v="mob" aria-pressed="false">Celular</button></div>
+      <span class="hint" id="pvInfo"></span>
+    </div>
+    <div class="frame" id="frame"><iframe id="pv" title="Prévia"></iframe></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TEMPLATE = /*TPL*/null/*TPL*/;
+
+const FONTES_TITULO = ["Playfair Display","Fraunces","Abril Fatface","Bebas Neue","Anton","Oswald","Montserrat","Poppins","Sora","Righteous","Lilita One","Lobster","Pacifico","Archivo Black","Alfa Slab One","Yeseva One","Permanent Marker","Bangers","Caveat"];
+const FONTES_TEXTO = ["Inter","Poppins","Montserrat","Lato","Nunito","Open Sans","DM Sans","Roboto","Work Sans","Rubik","Manrope"];
+const TEMAS = {
+  "Regional":     {corPrincipal:"#F28C28",corFundo:"#3A1D0E",corClara:"#FFF7EE",fonteTitulo:"Playfair Display",fonteTexto:"Inter",estiloBotao:"redondo"},
+  "Pizzaria":     {corPrincipal:"#D62828",corFundo:"#1F1A17",corClara:"#FFF8F0",fonteTitulo:"Abril Fatface",fonteTexto:"Lato",estiloBotao:"redondo"},
+  "Hamburgueria": {corPrincipal:"#E09F00",corFundo:"#121212",corClara:"#FAF7F2",fonteTitulo:"Bebas Neue",fonteTexto:"Poppins",estiloBotao:"quadrado"},
+  "Japonês":      {corPrincipal:"#C1121F",corFundo:"#111111",corClara:"#F7F4EF",fonteTitulo:"Sora",fonteTexto:"Inter",estiloBotao:"suave"},
+  "Açaí":         {corPrincipal:"#7B2CBF",corFundo:"#240046",corClara:"#F8F2FF",fonteTitulo:"Lilita One",fonteTexto:"Nunito",estiloBotao:"redondo"},
+  "Café":         {corPrincipal:"#A0522D",corFundo:"#2B1B12",corClara:"#FBF6EF",fonteTitulo:"Fraunces",fonteTexto:"DM Sans",estiloBotao:"suave"},
+  "Peixaria":     {corPrincipal:"#0E8A95",corFundo:"#0B2E33",corClara:"#F1FAFA",fonteTitulo:"Righteous",fonteTexto:"Nunito",estiloBotao:"redondo"}
+};
+const DIAS = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const ORDEM = [1,2,3,4,5,6,0];
+
+const NOVO = () => ({
+  slug:"", dominio:"", nome:"", slogan:"", logo:"",
+  ...TEMAS["Regional"], fusoHorario:"America/Manaus", fotoCapa:"",
+  whatsapp:"55", mensagemWhatsapp:"Olá! Vim pelo site e quero fazer um pedido.", telefone:"", instagram:"",
+  utm:"utm_source=site&utm_medium=linkbio",
+  delivery:[{nome:"Pedir pelo nosso site",link:""}], cardapio:"", reserva:"", avaliarGoogle:"", trabalheConosco:"",
+  unidades:[{nome:"Unidade Centro",endereco:"",foto:"",horarios:{0:null,1:"18:00-23:00",2:"18:00-23:00",3:"18:00-23:00",4:"18:00-23:00",5:"18:00-00:00",6:"18:00-00:00"}}],
+  destaques:[{nome:"",descricao:"",preco:"",foto:""}],
+  promocao:"", wifi:null, cupom:null, creditos:"Site por iComanda"
+});
+const EXEMPLO = () => ({...NOVO(), slug:"sabor-da-casa", nome:"Sabor da Casa", slogan:"A melhor comida regional, do jeito que você gosta.",
+  fotoCapa:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=70", whatsapp:"5592999999999", telefone:"(92) 99999-9999",
+  instagram:"https://instagram.com/seurestaurante", cardapio:"https://exemplo.com/cardapio", avaliarGoogle:"https://g.page/r/SEU-CODIGO/review",
+  delivery:[{nome:"Pedir pelo nosso site",link:"https://exemplo.com/pedido"},{nome:"iFood",link:"https://www.ifood.com.br/"}],
+  unidades:[{nome:"Unidade Centro",endereco:"Av. Eduardo Ribeiro, 500 - Centro, Manaus - AM",foto:"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=70",
+    horarios:{0:"11:00-15:00",1:"18:00-00:00",2:null,3:"18:00-00:00",4:"18:00-00:00",5:"18:00-01:00",6:"18:00-01:00"}}],
+  destaques:[{nome:"Prato da Casa",descricao:"Nosso clássico mais pedido.",preco:"R$ 49,90",foto:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=70"},
+    {nome:"Peixe na Brasa",descricao:"Peixe regional com acompanhamentos.",preco:"R$ 69,90",foto:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&q=70"}],
+  promocao:"Terça e quarta: sobremesa grátis em pedidos acima de R$ 80.", cupom:{codigo:"PRIMEIRA10",texto:"10% off no primeiro pedido"}
+});
+
+let cfg, imgs = {}, slugManual = false, paleta = [];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const get = (o,p) => p.split(".").reduce((a,k)=>a==null?a:a[k], o);
+const set = (o,p,v) => { const ks=p.split("."); let a=o; ks.slice(0,-1).forEach((k,i)=>{ if(a[k]==null) a[k]=/^\d+$/.test(ks[i+1])?[]:{}; a=a[k]; }); a[ks.at(-1)]=v; };
+const slugify = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const toast = m => { const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("show"),2000); };
+
+/* ---------- Campos ---------- */
+const F = (label,k,ph="",type="text") => `<label class="f"><span>${label}</span><input type="${type}" data-k="${k}" value="${esc(get(cfg,k))}" placeholder="${esc(ph)}"></label>`;
+const T = (label,k,ph="") => `<label class="f"><span>${label}</span><textarea rows="2" data-k="${k}" placeholder="${esc(ph)}">${esc(get(cfg,k))}</textarea></label>`;
+const S = (label,k,opts) => `<label class="f"><span>${label}</span><select data-k="${k}">${opts.map(o=>{const [v,t]=Array.isArray(o)?o:[o,o];return `<option value="${esc(v)}" ${get(cfg,k)===v?"selected":""} style="font-family:'${esc(v)}'">${esc(t)}</option>`}).join("")}</select></label>`;
+const COR = (label,k) => `<label class="f"><span>${label}</span><div class="color"><input type="color" data-k="${k}" value="${esc(get(cfg,k))}"><input data-k="${k}" value="${esc(get(cfg,k))}"></div></label>`;
+const IMG = (label,k,dica="") => { const v=get(cfg,k)||""; const src=imgs[v]||v;
+  return `<label class="f"><span>${label}</span><div class="img"><img src="${esc(src)}" alt="" onerror="this.style.visibility='hidden'" onload="this.style.visibility='visible'"><input data-k="${k}" value="${esc(v)}" placeholder="URL ou envie o arquivo"><span class="up">Enviar<input type="file" accept="image/*" data-img="${k}" hidden></span></div>${dica?`<span class="hint">${dica}</span>`:""}</label>`; };
+
+function horas(i){
+  return `<div class="hours">${ORDEM.map(d=>{ const v=cfg.unidades[i].horarios?.[d]; const [a,b]=(v||"18:00-23:00").split("-");
+    return `<div class="h" data-h="${i}.${d}"><span>${DIAS[d]}</span><input type="checkbox" ${v?"checked":""} title="Aberto"><input type="time" value="${a}" ${v?"":"disabled"}><input type="time" value="${b}" ${v?"":"disabled"}></div>`; }).join("")}
+    <span class="hint">Desmarque para dia fechado. Pode passar da meia-noite (ex.: 18:00 às 01:00).</span></div>`;
+}
+
+function contraste(hex1,hex2){
+  const L = h => { const n=parseInt(h.replace("#",""),16); return [n>>16,(n>>8)&255,n&255].map(c=>{c/=255;return c<=.03928?c/12.92:((c+.055)/1.055)**2.4}).reduce((s,c,i)=>s+c*[.2126,.7152,.0722][i],0); };
+  try{ const a=L(hex1), b=L(hex2); return (Math.max(a,b)+.05)/(Math.min(a,b)+.05); }catch{ return 21; }
+}
+function avisos(){
+  const w=[];
+  if(/^#[0-9a-f]{6}$/i.test(cfg.corPrincipal) && contraste("#ffffff",cfg.corPrincipal)<2.6) w.push("A cor principal está clara: o texto branco dos botões pode ficar difícil de ler. Escureça um pouco.");
+  if(/^#[0-9a-f]{6}$/i.test(cfg.corFundo) && contraste("#ffffff",cfg.corFundo)<4.5) w.push("A cor de fundo precisa ser escura (o texto do topo e do rodapé é branco).");
+  if(!/^55\d{10,11}$/.test(cfg.whatsapp||"")) w.push("WhatsApp deve ter só números: 55 + DDD + número (ex.: 5592999999999).");
+  return w.map(t=>`<div class="warn">${t}</div>`).join("");
+}
+
+function render(){
+  const open = [...document.querySelectorAll("#form details")].map(d=>d.open);
+  $("form").innerHTML = `
+  <details open><summary>1. Identidade visual</summary><div class="sec">
+    ${F("Nome do restaurante","nome","Ex.: Garagem Paraense")}
+    <div class="row">${F("Endereço no site (slug)","slug","nome-do-restaurante")}${F("Domínio próprio (opcional)","dominio","restaurante.com.br")}</div>
+    ${F("Frase de destaque","slogan","A melhor comida da cidade")}
+    ${IMG("Logo (PNG com fundo transparente)","logo")}
+    <div id="paleta">${paleta.length?`<span class="hint">Cores encontradas no logo (clique para usar como principal):</span><div class="swatches">${paleta.map(c=>`<span class="sw" style="background:${c}" data-sw="${c}" title="${c}"></span>`).join("")}</div><button class="btn sm" id="bPaleta" style="justify-self:start;margin-top:6px">Gerar paleta completa do logo</button>`:""}</div>
+    ${IMG("Foto de capa","fotoCapa","Horizontal, de preferência 1600px de largura e até 400 KB.")}
+    <span class="f"><span>Temas prontos</span></span>
+    <div class="presets">${Object.entries(TEMAS).map(([n,t])=>`<button class="preset" data-tema="${n}"><i style="background:${t.corPrincipal}"></i><i style="background:${t.corFundo}"></i>${n}</button>`).join("")}</div>
+    <div class="row3">${COR("Principal","corPrincipal")}${COR("Fundo escuro","corFundo")}${COR("Fundo claro","corClara")}</div>
+    <div class="row">${S("Fonte dos títulos","fonteTitulo",FONTES_TITULO)}${S("Fonte dos textos","fonteTexto",FONTES_TEXTO)}</div>
+    ${S("Estilo dos botões","estiloBotao",[["redondo","Redondo"],["suave","Cantos suaves"],["quadrado","Quadrado"]])}
+    <div id="avisos" style="display:grid;gap:6px">${avisos()}</div>
+  </div></details>
+
+  <details><summary>2. Contato e redes</summary><div class="sec">
+    <div class="row">${F("WhatsApp (só números)","whatsapp","5592999999999","tel")}${F("Telefone (exibição)","telefone","(92) 99999-9999")}</div>
+    ${T("Mensagem automática do WhatsApp","mensagemWhatsapp")}
+    ${F("Instagram","instagram","https://instagram.com/...","url")}
+    ${F("Parâmetros UTM","utm","utm_source=site&utm_medium=linkbio")}
+  </div></details>
+
+  <details><summary>3. Delivery, cardápio e links</summary><div class="sec">
+    ${cfg.delivery.map((d,i)=>`<div class="item"><button class="btn sm rm" data-rm="delivery.${i}">Remover</button>${F("Nome","delivery."+i+".nome","iFood")}${F("Link","delivery."+i+".link","https://...","url")}</div>`).join("")}
+    <button class="btn sm" data-add="delivery" style="justify-self:start">+ Canal de delivery</button>
+    ${F("Cardápio (link ou PDF)","cardapio","https://...","url")}
+    ${F("Reserva (vazio = pelo WhatsApp)","reserva","https://...","url")}
+    ${F("Link de avaliação no Google","avaliarGoogle","https://g.page/r/.../review","url")}
+    ${F("Trabalhe conosco (formulário)","trabalheConosco","https://forms.gle/...","url")}
+  </div></details>
+
+  <details><summary>4. Unidades e horários</summary><div class="sec">
+    ${cfg.unidades.map((u,i)=>`<div class="item">${cfg.unidades.length>1?`<button class="btn sm rm" data-rm="unidades.${i}">Remover</button>`:""}
+      ${F("Nome da unidade","unidades."+i+".nome")}${F("Endereço completo","unidades."+i+".endereco","Rua, nº - Bairro, Cidade - UF")}
+      ${IMG("Foto da fachada/salão","unidades."+i+".foto")}${horas(i)}</div>`).join("")}
+    <button class="btn sm" data-add="unidades" style="justify-self:start">+ Unidade</button>
+  </div></details>
+
+  <details><summary>5. Pratos em destaque</summary><div class="sec">
+    ${cfg.destaques.map((d,i)=>`<div class="item"><button class="btn sm rm" data-rm="destaques.${i}">Remover</button>
+      <div class="row">${F("Prato","destaques."+i+".nome")}${F("Preço","destaques."+i+".preco","R$ 0,00")}</div>
+      ${F("Descrição","destaques."+i+".descricao")}${IMG("Foto","destaques."+i+".foto")}</div>`).join("")}
+    ${cfg.destaques.length<6?`<button class="btn sm" data-add="destaques" style="justify-self:start">+ Prato</button>`:""}
+  </div></details>
+
+  <details><summary>6. Extras</summary><div class="sec">
+    ${T("Faixa de promoção (vazio = esconde)","promocao")}
+    <label class="toggle"><input type="checkbox" data-tg="cupom" ${cfg.cupom?"checked":""}> Cupom de desconto</label>
+    ${cfg.cupom?`<div class="row">${F("Código","cupom.codigo","PRIMEIRA10")}${F("Texto","cupom.texto","10% off no primeiro pedido")}</div>`:""}
+    <label class="toggle"><input type="checkbox" data-tg="wifi" ${cfg.wifi?"checked":""}> Wi-Fi do salão</label>
+    ${cfg.wifi?`<div class="row">${F("Rede","wifi.rede")}${F("Senha","wifi.senha")}</div>`:""}
+    ${F("Crédito no rodapé","creditos")}
+  </div></details>`;
+  document.querySelectorAll("#form details").forEach((d,i)=>{ if(open.length) d.open=open[i]; });
+}
+
+/* ---------- Eventos do formulário ---------- */
+$("form").addEventListener("input", e=>{
+  const el=e.target, k=el.dataset.k;
+  if(k){
+    set(cfg,k,el.value);
+    document.querySelectorAll(`[data-k="${k}"]`).forEach(o=>{ if(o!==el) o.value=el.value; });
+    if(k==="slug") slugManual = !!el.value;
+    if(k==="nome" && !slugManual){ cfg.slug=slugify(el.value); const s=document.querySelector('[data-k="slug"]'); if(s) s.value=cfg.slug; }
+    if(/^cor|whatsapp/.test(k)) $("avisos").innerHTML=avisos();
+    const th = el.closest(".img")?.querySelector("img"); if(th) th.src = imgs[el.value]||el.value;
+    changed();
+  }
+  const h = el.closest("[data-h]");
+  if(h){ const [i,d]=h.dataset.h.split("."); const [cb,a,b]=h.querySelectorAll("input");
+    a.disabled=b.disabled=!cb.checked; cfg.unidades[i].horarios[d] = cb.checked ? `${a.value}-${b.value}` : null; changed(); }
+});
+$("form").addEventListener("change", async e=>{
+  const el=e.target;
+  if(el.dataset.img && el.files[0]){
+    const file=el.files[0], k=el.dataset.img;
+    const url = await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); });
+    const nomeArq = slugify(k.replace(/\.\d+\./g,"-").replace(/\./g,"-")) + "-" + slugify(file.name.replace(/\.[^.]+$/,"")) + "." + (file.name.split(".").pop().toLowerCase());
+    const p = `/imagens/${cfg.slug||"cliente"}/${nomeArq}`;
+    imgs[p]=url; set(cfg,k,p);
+    if(file.size>500*1024) toast("Imagem com "+Math.round(file.size/1024)+" KB. Ideal: até 400 KB.");
+    if(k==="logo") paleta = extrairCores(await carregar(url));
+    render(); changed();
+  }
+  if(el.dataset.tg){ cfg[el.dataset.tg] = el.checked ? (el.dataset.tg==="cupom"?{codigo:"",texto:""}:{rede:"",senha:""}) : null; render(); changed(); }
+});
+$("form").addEventListener("click", e=>{
+  const b=e.target.closest("button,[data-sw]"); if(!b) return;
+  if(b.dataset.tema){ e.preventDefault(); Object.assign(cfg,TEMAS[b.dataset.tema]); render(); changed(); toast("Tema "+b.dataset.tema+" aplicado"); }
+  if(b.dataset.add){ e.preventDefault(); const n={delivery:{nome:"",link:""},destaques:{nome:"",descricao:"",preco:"",foto:""},
+    unidades:{nome:"Nova unidade",endereco:"",foto:"",horarios:JSON.parse(JSON.stringify(cfg.unidades[0].horarios))}}[b.dataset.add];
+    cfg[b.dataset.add].push(n); render(); changed(); }
+  if(b.dataset.rm){ e.preventDefault(); const [l,i]=b.dataset.rm.split("."); cfg[l].splice(+i,1); render(); changed(); }
+  if(b.dataset.sw){ cfg.corPrincipal=b.dataset.sw; render(); changed(); }
+  if(b.id==="bPaleta"){ e.preventDefault(); aplicarPaleta(); }
+});
+
+/* ---------- Cores a partir do logo ---------- */
+const carregar = src => new Promise(r=>{ const i=new Image(); i.onload=()=>r(i); i.src=src; });
+const hex = (r,g,b) => "#"+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,"0")).join("");
+function extrairCores(img){
+  const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); x.drawImage(img,0,0,64,64);
+  const d=x.getImageData(0,0,64,64).data, b={};
+  for(let i=0;i<d.length;i+=4){ if(d[i+3]<128) continue; const k=[d[i]>>4,d[i+1]>>4,d[i+2]>>4].join(",");
+    (b[k]=b[k]||{n:0,r:0,g:0,b:0}).n++; b[k].r+=d[i]; b[k].g+=d[i+1]; b[k].b+=d[i+2]; }
+  return Object.values(b).sort((a,z)=>z.n-a.n).slice(0,8).map(v=>hex(v.r/v.n,v.g/v.n,v.b/v.n));
+}
+const rgb = h => { const n=parseInt(h.slice(1),16); return [n>>16,(n>>8)&255,n&255]; };
+const sat = h => { const [r,g,b]=rgb(h).map(v=>v/255); const mx=Math.max(r,g,b), mn=Math.min(r,g,b); return mx===0?0:(mx-mn)/mx * (mx>.25&&mx<.97?1:.3); };
+const mix = (h,alvo,t) => { const a=rgb(h), b=rgb(alvo); return hex(...a.map((v,i)=>v+(b[i]-v)*t)); };
+function aplicarPaleta(){
+  if(!paleta.length) return;
+  let pri = [...paleta].sort((a,b)=>sat(b)-sat(a))[0];
+  while(contraste("#ffffff",pri)<2.6) pri=mix(pri,"#000000",.12);
+  const escuras = paleta.filter(c=>contraste("#ffffff",c)>=7);
+  cfg.corPrincipal=pri; cfg.corFundo = escuras[0] || mix(pri,"#000000",.78); cfg.corClara = mix(pri,"#ffffff",.94);
+  render(); changed(); toast("Paleta gerada a partir do logo");
+}
+
+/* ---------- Prévia ---------- */
+function cfgComImagens(){
+  const c = JSON.parse(JSON.stringify(cfg));
+  (function walk(o){ for(const k in o){ if(typeof o[k]==="string" && imgs[o[k]]) o[k]=imgs[o[k]]; else if(o[k]&&typeof o[k]==="object") walk(o[k]); } })(c);
+  return c;
+}
+function montarHTML(c, extraHead=""){
+  if(!TEMPLATE) return "<p style='font:16px system-ui;padding:24px'>Abra o gerador pelo site publicado (/gerador) ou rode <b>node build.js</b> e abra dist/gerador/index.html.</p>";
+  const head = `<title>${esc(c.nome)} – ${esc(c.slogan)}</title><meta name="description" content="${esc(c.slogan)}"><meta name="theme-color" content="${esc(c.corFundo)}">` + extraHead;
+  return TEMPLATE.replace("__CONFIG_JSON__", JSON.stringify(c).replace(/</g,"\\u003c")).replace("<!--HEAD-->", head);
+}
+let pvT, pvY=0;
+function changed(){
+  clearTimeout(pvT); pvT=setTimeout(()=>{
+    try{ pvY = $("pv").contentWindow.scrollY || 0; }catch{}
+    $("pv").srcdoc = montarHTML(cfgComImagens(), '<base target="_blank">');
+    $("pvInfo").textContent = cfg.slug ? "Endereço: /"+cfg.slug+(cfg.dominio?"  ·  "+cfg.dominio:"") : "";
+    try{ localStorage.setItem("gerador-rascunho", JSON.stringify({cfg,imgs})); }catch{}
+  }, 350);
+}
+$("pv").addEventListener("load", ()=>{ try{ const w=$("pv").contentWindow; w.scrollTo(0,pvY); w.document.querySelectorAll(".reveal").forEach(e=>e.classList.add("show")); }catch{} });
+document.querySelectorAll(".seg .btn").forEach(b=>b.onclick=()=>{ document.querySelectorAll(".seg .btn").forEach(x=>x.setAttribute("aria-pressed",x===b)); $("frame").classList.toggle("mob",b.dataset.v==="mob"); });
+
+/* ---------- Exportar ---------- */
+const limpo = () => { const c=JSON.parse(JSON.stringify(cfg)); c.slug = c.slug || slugify(c.nome) || "cliente"; return c; };
+const baixar = (nome, conteudo, tipo) => { const a=document.createElement("a"); a.href = conteudo instanceof Blob ? URL.createObjectURL(conteudo) : URL.createObjectURL(new Blob([conteudo],{type:tipo})); a.download=nome; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+function validar(){ const f=[]; if(!cfg.nome) f.push("nome"); if(!/^55\d{10,11}$/.test(cfg.whatsapp||"")) f.push("WhatsApp"); if(f.length){ toast("Preencha: "+f.join(", ")); return false; } return true; }
+
+$("bCopy").onclick = async ()=>{ try{ await navigator.clipboard.writeText(JSON.stringify(limpo(),null,2)); toast("JSON copiado"); }catch{ toast("Não foi possível copiar"); } };
+$("bHtml").onclick = ()=>{ if(!validar()) return; const c=cfgComImagens(); baixar("index.html", montarHTML(c), "text/html"); toast("Site baixado (arquivo único, pronto para subir em qualquer hospedagem)"); };
+$("bZip").onclick = async ()=>{
+  if(!validar()) return;
+  const c=limpo();
+  if(!window.JSZip) await new Promise((ok,err)=>{ const s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"; s.onload=ok; s.onerror=err; document.head.appendChild(s); }).catch(()=>{});
+  if(!window.JSZip){ baixar(c.slug+".json", JSON.stringify(c,null,2), "application/json"); toast("Baixei só o JSON (sem internet para montar o .zip)"); return; }
+  const z=new JSZip(); z.file(`clientes/${c.slug}.json`, JSON.stringify(c,null,2));
+  const usados = new Set(); (function walk(o){ for(const k in o){ if(typeof o[k]==="string" && imgs[o[k]]) usados.add(o[k]); else if(o[k]&&typeof o[k]==="object") walk(o[k]); } })(c);
+  for(const p of usados){ z.file(p.replace(/^\//,""), imgs[p].split(",")[1], {base64:true}); }
+  baixar(c.slug+"-site.zip", await z.generateAsync({type:"blob"}));
+  toast("Pacote baixado: descompacte e envie as pastas para o GitHub");
+};
+$("bNovo").onclick = ()=>{ if(!confirm("Começar um cliente novo? O rascunho atual será substituído.")) return; cfg=NOVO(); imgs={}; paleta=[]; slugManual=false; render(); changed(); };
+$("fImport").onchange = async e=>{ const f=e.target.files[0]; if(!f) return;
+  try{ cfg={...NOVO(), ...JSON.parse(await f.text())}; slugManual=true; imgs={}; paleta=[]; render(); changed(); toast("Cliente "+cfg.nome+" carregado"); }catch{ toast("Arquivo JSON inválido"); }
+  e.target.value=""; };
+
+/* ---------- Início ---------- */
+try{ const r=JSON.parse(localStorage.getItem("gerador-rascunho")); if(r&&r.cfg){ cfg={...NOVO(),...r.cfg}; imgs=r.imgs||{}; slugManual=true; } }catch{}
+if(!cfg) cfg = EXEMPLO();
+render(); changed();
+</script>
+</body>
+</html>

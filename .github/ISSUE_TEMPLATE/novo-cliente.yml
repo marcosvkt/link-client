@@ -1,0 +1,40 @@
+name: Novo cliente
+description: Cadastrar o site de um novo restaurante (o Claude monta e abre um PR)
+title: "Novo cliente: "
+labels: ["novo-cliente"]
+body:
+  - type: input
+    id: nome
+    attributes: { label: Nome do restaurante }
+    validations: { required: true }
+  - type: input
+    id: whatsapp
+    attributes: { label: WhatsApp, placeholder: "5592999999999" }
+    validations: { required: true }
+  - type: input
+    id: tipo
+    attributes: { label: Tipo de cozinha, placeholder: "pizzaria, regional, japonês, hamburgueria..." }
+  - type: input
+    id: slogan
+    attributes: { label: Frase de destaque }
+  - type: textarea
+    id: links
+    attributes:
+      label: Links
+      description: Delivery (iFood, site próprio), cardápio, Instagram, avaliação no Google, reserva, trabalhe conosco
+  - type: textarea
+    id: unidades
+    attributes:
+      label: Endereço(s) e horários
+      placeholder: "Rua X, 123 - Bairro, Manaus - AM | Qua a Seg 18h–00h, folga terça"
+  - type: textarea
+    id: destaques
+    attributes: { label: Pratos em destaque (nome, descrição, preço) }
+  - type: textarea
+    id: extras
+    attributes: { label: Promoção, cupom, Wi-Fi, domínio próprio }
+  - type: textarea
+    id: visual
+    attributes:
+      label: Logo, fotos e identidade visual
+      description: Arraste aqui o logo e as fotos. Se tiver cores ou fontes da marca, informe.

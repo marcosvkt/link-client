@@ -1,0 +1,4 @@
+Coloque aqui as imagens de cada cliente, uma pasta por cliente:
+imagens/<slug-do-cliente>/logo.png
+
+O gerador ja monta essa estrutura no pacote .zip.
