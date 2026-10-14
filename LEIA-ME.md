@@ -54,6 +54,13 @@ Com domínio próprio, também funcionam como `pizzariabella.com.br/whatsapp`. U
 
 Use o botão **Baixar site (.html)**. Ele gera um arquivo único, com as imagens embutidas, que pode ser enviado para qualquer hospedagem (cPanel, Hostinger) ou arrastado no Netlify Drop.
 
+## Fotos pelo computador (macOS)
+
+1. Crie a pasta `entrada/<slug>/` (ex.: `entrada/bella-napoli/`) e solte as fotos do jeito que vierem, inclusive HEIC do iPhone.
+2. Dê nomes que indiquem o uso: o que começa com `logo` vira o logo, o que começa com `capa` vira a foto de capa. As demais ficam com o próprio nome, sem acento nem espaço.
+3. Rode `node fotos.js`. Ou deixe `node fotos.js --watch` aberto: cada foto solta na pasta é convertida na hora.
+4. As fotos prontas ficam em `imagens/<slug>/`, já reduzidas. Os originais em `entrada/` não vão para o GitHub.
+
 ## Testar no computador (opcional)
 
 Com o Node instalado, rode `node build.js` e abra `dist/gerador/index.html` ou `dist/<slug>/index.html`.

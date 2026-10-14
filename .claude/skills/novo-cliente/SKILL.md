@@ -17,7 +17,7 @@ Informações recebidas: $ARGUMENTS
 
 2. **Slug.** Gere a partir do nome (minúsculas, sem acento, hífens). Confirme que `clientes/<slug>.json` ainda não existe.
 
-3. **Imagens.** Copie logo e fotos informadas para `imagens/<slug>/` com nomes simples (`logo.png`, `capa.jpg`, `prato-1.jpg`...). Se alguma foto passar de ~500 KB e houver ferramenta disponível (`sips`, `magick`, `cwebp` ou Python com Pillow), reduza para no máximo 1600px de largura. Sem foto de capa, use uma foto do Unsplash adequada ao tipo de cozinha e avise.
+3. **Imagens.** Copie logo e fotos informadas para `entrada/<slug>/` com nomes que indiquem o uso (`logo.png`, `capa.jpg`, `prato-1.jpg`...) e rode `node fotos.js`, que converte e salva em `imagens/<slug>/`. Sem `sips` (fora do macOS), copie direto para `imagens/<slug>/` e reduza com a ferramenta disponível para no máximo 1600px de largura. Sem foto de capa, use uma foto do Unsplash adequada ao tipo de cozinha e avise.
 
 4. **Identidade visual.**
    - Se houver logo: abra a imagem, identifique as cores dominantes e defina `corPrincipal`, `corFundo` e `corClara` seguindo as regras de contraste do CLAUDE.md.

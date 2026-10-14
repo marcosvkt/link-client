@@ -2,6 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(node build.js)",
+      "Bash(node fotos.js*)",
       "Bash(git status *)",
       "Bash(git diff *)",
       "Bash(git add *)",

@@ -1,4 +1,5 @@
-Coloque aqui as imagens de cada cliente, uma pasta por cliente:
-imagens/<slug-do-cliente>/logo.png
+Não coloque fotos aqui à mão. Solte os originais em entrada/<slug-do-cliente>/
+e rode `node fotos.js` (ou `node fotos.js --watch`): ele converte e salva aqui,
+em imagens/<slug-do-cliente>/ (logo.png, capa.jpg, outras fotos .jpg).
 
-O gerador ja monta essa estrutura no pacote .zip.
+O gerador também monta essa estrutura no pacote .zip.

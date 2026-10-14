@@ -15,6 +15,7 @@ Repositório que gera um site por restaurante. Cada cliente é um JSON em `clien
 
 ## Comandos
 - `node build.js`: gera tudo em `dist/` (Node 20, sem dependências, sem `npm install`). Não há testes nem lint: o build é a validação
+- `node fotos.js`: converte as fotos de `entrada/<slug>/` para `imagens/<slug>/` (`--watch` fica observando a pasta). Usa o `sips` do macOS
 - Conferir o resultado: abrir `dist/<slug>/index.html` ou `dist/gerador/index.html`. O `gerador.html` da raiz aberto direto NÃO funciona (o template só é embutido no build)
 
 ## Como funciona (visão geral)
@@ -46,6 +47,7 @@ Repositório que gera um site por restaurante. Cada cliente é um JSON em `clien
 Regional, Pizzaria, Hamburgueria, Japonês, Açaí, Café, Peixaria: veja o objeto `TEMAS` em `gerador.html`.
 
 ## Imagens
+- Fluxo: originais (qualquer formato, inclusive HEIC) vão em `entrada/<slug>/`, que não é commitada; `node fotos.js` gera os arquivos finais em `imagens/<slug>/`. Nome começando com `logo` vira `logo.png` (até 600px), com `capa` vira `capa.jpg` (até 1600px), o resto vira `<nome-limpo>.jpg` (até 1200px), sempre abaixo de ~400 KB
 - Logo: PNG com fundo transparente. Fotos: JPG, até ~400 KB, capa com ~1600px de largura
 - Nome dos arquivos em minúsculas, sem acento nem espaço
 - Para escolher cores a partir do logo, abra a imagem e use as cores dominantes respeitando as regras de contraste acima
