@@ -1,0 +1,44 @@
+{
+  "slug": "clandestina-pizzaria",
+  "dominio": "",
+  "nome": "Clandestina Pizzaria",
+  "slogan": "Pede em OFF, depois me conta!!",
+  "logo": "/imagens/clandestina-pizzaria/logo.png",
+  "corPrincipal": "#B8361F",
+  "corFundo": "#1A1512",
+  "corClara": "#F7F0E3",
+  "fonteTitulo": "Oswald",
+  "fonteTexto": "Lato",
+  "estiloBotao": "suave",
+  "fusoHorario": "America/Manaus",
+  "fotoCapa": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1600&q=70",
+  "whatsapp": "5592992269977",
+  "mensagemWhatsapp": "Olá! Vim pelo site e quero fazer um pedido.",
+  "telefone": "(92) 99226-9977",
+  "instagram": "https://www.instagram.com/clandestinapizzaria/",
+  "utm": "utm_source=site&utm_medium=linkbio",
+  "delivery": [
+    { "nome": "Pedir pelo nosso site", "link": "https://clandestinapizzaria.pedidosite.com.br/" }
+  ],
+  "cardapio": "https://clandestinapizzaria.pedidosite.com.br/",
+  "reserva": "",
+  "avaliarGoogle": "https://www.google.com/maps/place/Clandestina+Pizzaria/@-3.0780006,-60.0102068,17z/data=!3m1!4b1!4m6!3m5!1s0x926c1bfb0ce9711b:0x1067cdc8203cb770!8m2!3d-3.0780006!4d-60.0102068!16s%2Fg%2F11z2g8_s1v",
+  "trabalheConosco": "",
+  "unidades": [
+    {
+      "nome": "Parque Dez",
+      "endereco": "Av. Ivanete Machado, 1298 - Parque Dez de Novembro, Manaus - AM, 69055-750",
+      "horarios": { "0": "17:00-23:00", "1": null, "2": "17:00-22:30", "3": "17:00-22:30", "4": "17:00-22:30", "5": "17:00-23:00", "6": "17:00-23:00" },
+      "foto": ""
+    }
+  ],
+  "destaques": [
+    { "nome": "Atum com Gorgonzola", "descricao": "Massa de 48h de fermentação, molho de tomate especial, mussarela, atum em pedaços, gorgonzola, cebola roxa, azeitona e orégano.", "preco": "R$ 74,90", "foto": "/imagens/clandestina-pizzaria/atum.jpg" },
+    { "nome": "Choripan", "descricao": "Massa de 48h de fermentação, molho de tomate especial, mussarela, toscana, gotas de creme de alho Sabor do Chef, queijo provolone, finalizada com chimichurri da casa e azeitonas.", "preco": "R$ 72,90", "foto": "/imagens/clandestina-pizzaria/choripan.jpg" },
+    { "nome": "Lombo com Barbecue", "descricao": "Massa de 48h de fermentação, molho especial, mussarela, lombo canadense, gotas de catupiry, parmesão ralado, barbecue e azeitona.", "preco": "R$ 69,90", "foto": "/imagens/clandestina-pizzaria/lombo-c-barbecue.jpg" }
+  ],
+  "promocao": "",
+  "wifi": null,
+  "cupom": null,
+  "creditos": "Site por iComanda"
+}
